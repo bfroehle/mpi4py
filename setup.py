@@ -337,11 +337,12 @@ def ext_modules():
     MPI = dict(
         name='mpi4py.MPI',
         sources=['src/MPI.c'],
-        depends=(['src/mpi4py.MPI.c'] +
-                 glob('src/*.h') +
+        depends=(glob('src/*.h') +
                  glob('src/config/*.h') +
                  glob('src/compat/*.h')
                  ),
+        define_macros=[('MPICH_SKIP_MPICXX', 1),
+                       ('OMPI_SKIP_MPICXX', 1)],
         configure=configure_mpi,
         )
     modules.append(MPI)
@@ -350,10 +351,11 @@ def ext_modules():
         name='mpi4py.MPE',
         optional=True,
         sources=['src/MPE.c'],
-        depends=['src/mpi4py.MPE.c',
-                 'src/MPE/mpe-log.h',
+        depends=['src/MPE/mpe-log.h',
                  'src/MPE/mpe-log.c',
                  ],
+        define_macros=[('MPICH_SKIP_MPICXX', '1'),
+                       ('OMPI_SKIP_MPICXX', '1')],
         configure=configure_mpe,
         )
     modules.append(MPE)
@@ -443,15 +445,15 @@ def run_setup():
     if ('setuptools' in sys.modules):
         from os.path import exists, join
         metadata['zip_safe'] = False
-        if not exists(join('src', 'mpi4py.MPI.c')):
+        if not exists(join('src', 'MPI.c')):
             metadata['install_requires'] = ['Cython>='+CYTHON]
     #
     setup(packages     = ['mpi4py'],
           package_dir  = {'mpi4py' : 'src'},
           package_data = {'mpi4py' : ['include/mpi4py/*.h',
-                                      'include/mpi4py/*.pxd',
-                                      'include/mpi4py/*.pyx',
-                                      'include/mpi4py/*.pxi',
+                                      '*.pxd',
+                                      '*.pyx',
+                                      '*.pxi',
                                       'include/mpi4py/*.i',]},
           ext_modules  = [Ext(**ext) for ext in ext_modules()],
           libraries    = [Lib(**lib) for lib in libraries()  ],
@@ -540,26 +542,26 @@ def run_cython(source, depends=(), includes=(),
 def build_sources(cmd):
     from distutils.errors import DistutilsError
     from os.path import exists, isdir, join
-    has_src = (exists(join('src', 'mpi4py.MPI.c')) and
-               exists(join('src', 'mpi4py.MPE.c')))
+    has_src = (exists(join('src', 'MPI.c')) and
+               exists(join('src', 'MPE.c')))
     has_vcs = (isdir('.hg') or isdir('.git') or isdir('.svn'))
     if (has_src and not has_vcs and not cmd.force): return
     # mpi4py.MPI
-    source = 'mpi4py.MPI.pyx'
-    depends = ("include/*/*.pxi",
-               "include/*/*.pxd",
+    source = 'MPI.pyx'
+    depends = ("*.pxi",
+               "*.pxd",
                "MPI/*.pyx",
                "MPI/*.pxi",)
-    includes = ['include']
+    includes = ['.']
     destdir_h = os.path.join('include', 'mpi4py')
     run_cython(source, depends, includes,
                destdir_c=None, destdir_h=destdir_h,
                wdir='src', force=cmd.force, VERSION=CYTHON)
     # mpi4py.MPE
-    source = 'mpi4py.MPE.pyx'
+    source = 'MPE.pyx'
     depends = ("MPE/*.pyx",
                "MPE/*.pxi",)
-    includes = ['include']
+    includes = ['.']
     run_cython(source, depends, includes,
                destdir_c=None, destdir_h=None,
                wdir='src', force=cmd.force, VERSION=CYTHON)

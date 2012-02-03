@@ -1,36 +1,42 @@
+#cython: embedsignature=True
+#cython: cdivision=True
+#cython: always_allow_keywords=True
+#cython: autotestdict=False
+cimport cython
+
 __doc__ = """
 Message Passing Interface
 """
 
-include "mpi4py/mpi.pxi"
+include "mpi.pxi"
 
-include "stdlib.pxi"
-include "atimport.pxi"
+include "MPI/stdlib.pxi"
+include "MPI/atimport.pxi"
 
 initialize()
 startup()
 
-include "asmpistr.pxi"
-include "asbuffer.pxi"
-include "asmemory.pxi"
-include "asarray.pxi"
-include "helpers.pxi"
-include "message.pxi"
-include "pickled.pxi"
+include "MPI/asmpistr.pxi"
+include "MPI/asbuffer.pxi"
+include "MPI/asmemory.pxi"
+include "MPI/asarray.pxi"
+include "MPI/helpers.pxi"
+include "MPI/message.pxi"
+include "MPI/pickled.pxi"
 
-include "CAPI.pxi"
+include "MPI/CAPI.pxi"
 
-include "Exception.pyx"
-include "Errhandler.pyx"
-include "Datatype.pyx"
-include "Status.pyx"
-include "Request.pyx"
-include "Info.pyx"
-include "Op.pyx"
-include "Group.pyx"
-include "Comm.pyx"
-include "Win.pyx"
-include "File.pyx"
+include "MPI/Exception.pyx"
+include "MPI/Errhandler.pyx"
+include "MPI/Datatype.pyx"
+include "MPI/Status.pyx"
+include "MPI/Request.pyx"
+include "MPI/Info.pyx"
+include "MPI/Op.pyx"
+include "MPI/Group.pyx"
+include "MPI/Comm.pyx"
+include "MPI/Win.pyx"
+include "MPI/File.pyx"
 
 # Assorted constants
 # ------------------

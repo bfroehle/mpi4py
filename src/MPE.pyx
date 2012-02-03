@@ -1,3 +1,9 @@
+#cython: embedsignature=True
+#cython: cdivision=True
+#cython: always_allow_keywords=True
+#cython: autotestdict=False
+cimport cython
+
 __doc__ = """
 Multi-Processing Environment
 """
@@ -10,8 +16,8 @@ MPI = None
 
 # -----------------------------------------------------------------------------
 
-include "mpe-log.pxi"
-include "helpers.pxi"
+include "MPE/mpe-log.pxi"
+include "MPE/helpers.pxi"
 
 # -----------------------------------------------------------------------------
 
